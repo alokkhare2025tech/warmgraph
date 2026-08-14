@@ -145,6 +145,13 @@ export interface Conflict {
   severity: 'high' | 'medium';
 }
 
+export interface ConflictReport {
+  conflicts: Conflict[];
+  /** Totals across the whole graph, not just the page being shown. */
+  totals: { overlaps: number; rivalries: number };
+  rivalsOnly: boolean;
+}
+
 export interface InvestorDetail {
   investor: InvestorSummary;
   partners: PersonSummary[];

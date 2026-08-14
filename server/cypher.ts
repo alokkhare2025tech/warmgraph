@@ -437,8 +437,8 @@ MATCH (me:Person {id: $fromId})-[:FOUNDED]->(mine:Company)-[:OPERATES_IN]->(s:Se
 MATCH (i:Investor)-[:FOCUSES_ON]->(s)
 OPTIONAL MATCH (i)-[:PARTICIPATED_IN]->(r:Round)<-[:RAISED]-(backed:Company)-[:OPERATES_IN]->(s)
 WITH i, s, mine,
-     count(DISTINCT backed) AS sectorBets,
-     sum(CASE WHEN r.stage = $stage THEN 1 ELSE 0 END) AS stageBets
+     count(DISTINCT backed) AS sectorBetsRaw,
+     sum(CASE WHEN r.stage = $stage THEN 1 ELSE 0 END) AS stageBetsRaw
 OPTIONAL MATCH (i)-[:FOCUSES_ON]->(allS:Sector)
 RETURN i.id            AS id,
        i.name          AS name,
@@ -448,8 +448,8 @@ RETURN i.id            AS id,
        i.checkSizeUsd  AS checkSizeUsd,
        collect(DISTINCT allS.name) AS sectors,
        collect(DISTINCT s.name)    AS matchedSectors,
-       max(sectorBets) AS sectorBets,
-       max(stageBets)  AS stageBets,
+       max(sectorBetsRaw) AS sectorBets,
+       max(stageBetsRaw)  AS stageBets,
        collect(DISTINCT mine.name)[0] AS forCompany
 ORDER BY stageBets DESC, sectorBets DESC, name ASC
 LIMIT $limit
@@ -473,6 +473,7 @@ WITH i, s, c1, c2,
      count(rivalry)      AS rivalryCount,
      min(r1.announcedOn) AS firstDate,
      min(r2.announcedOn) AS secondDate
+WHERE $rivalsOnly = false OR rivalryCount > 0
 OPTIONAL MATCH (i)-[:FOCUSES_ON]->(fs:Sector)
 RETURN i.id           AS investorId,
        i.name         AS investorName,
@@ -489,6 +490,21 @@ ORDER BY declaredRivals DESC, investorName, sector
 LIMIT $limit
 `,
   'A six-hop pattern in a single MATCH. The relational equivalent is a four-way self-join over rounds and participations with a de-duplication predicate.',
+);
+
+export const CONFLICT_COUNTS = def(
+  'conflicts.counts',
+  'How many overlaps exist in total, and how many are declared rivalries.',
+  `
+MATCH (i:Investor)-[:PARTICIPATED_IN]->(r1:Round)<-[:RAISED]-(c1:Company)-[:OPERATES_IN]->(s:Sector),
+      (i)-[:PARTICIPATED_IN]->(r2:Round)<-[:RAISED]-(c2:Company)-[:OPERATES_IN]->(s)
+WHERE c1.id < c2.id
+OPTIONAL MATCH (c1)-[rivalry:COMPETES_WITH]-(c2)
+WITH i, s, c1, c2, count(rivalry) AS rivalryCount
+RETURN count(*) AS overlaps,
+       sum(CASE WHEN rivalryCount > 0 THEN 1 ELSE 0 END) AS rivalries
+`,
+  'Counted separately from the list so the summary reflects the whole graph, not just the page being shown.',
 );
 
 /* -------------------------------------------------------------------------- */
@@ -554,6 +570,7 @@ export const CATALOGUE: CypherStatement[] = [
   INTRO_PATH_QUERIES[3],
   RECOMMEND_INVESTORS,
   CONFLICTS,
+  CONFLICT_COUNTS,
   NEIGHBOURHOOD_QUERIES[2],
   GRAPH_CENTER,
 ];

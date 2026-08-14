@@ -88,6 +88,31 @@ export function toApiError(err: unknown): ApiError {
   return new ApiError('INTERNAL', 'The database returned an unexpected error.', message);
 }
 
+/**
+ * Converts whole JS numbers into Bolt integers before they leave the process.
+ *
+ * `disableLosslessIntegers` only governs the *inbound* direction. Outbound, a
+ * plain JS number is encoded as a 64-bit float, so `LIMIT $limit` arrives as
+ * `10.0` and the server rejects it — and every year, headcount and USD amount
+ * in the seed data would be stored as a float. Normalising here, once, means
+ * neither the queries nor the seed script have to think about it.
+ *
+ * Recurses through the arrays and maps used by the batched `UNWIND` writes.
+ * Genuinely fractional numbers are left alone.
+ */
+function toBoltParams(value: unknown): unknown {
+  if (typeof value === 'number') {
+    return Number.isInteger(value) ? neo4j.int(value) : value;
+  }
+  if (Array.isArray(value)) return value.map(toBoltParams);
+  if (value !== null && typeof value === 'object' && value.constructor === Object) {
+    const converted: Record<string, unknown> = {};
+    for (const [key, entry] of Object.entries(value)) converted[key] = toBoltParams(entry);
+    return converted;
+  }
+  return value;
+}
+
 export interface RunOptions {
   /** Read queries are routed to followers when the deployment has them. */
   write?: boolean;
@@ -114,7 +139,9 @@ export async function run(
       defaultAccessMode: options.write ? neo4j.session.WRITE : neo4j.session.READ,
       database: options.database ?? config?.database,
     });
-    return await session.run(cypher, params, { timeout: QUERY_TIMEOUT_MS });
+    return await session.run(cypher, toBoltParams(params) as Record<string, unknown>, {
+      timeout: QUERY_TIMEOUT_MS,
+    });
   } catch (err) {
     throw toApiError(err);
   } finally {

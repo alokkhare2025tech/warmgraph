@@ -1,21 +1,26 @@
 import { useState } from 'react';
-import type { Conflict } from '../../shared/types';
+import type { ConflictReport } from '../../shared/types';
 import { useReportTraces } from '../App';
 import { AsyncBoundary, EmptyState, SkeletonCards } from '../components/states';
-import { monthYear } from '../lib/format';
+import { count, monthYear } from '../lib/format';
 import { useApi } from '../lib/useApi';
+
+const PAGE_SIZE = 48;
 
 /**
  * The screen that exists to make the "why a graph?" argument concrete.
  */
 export function ConflictsPage() {
-  const [onlyRivals, setOnlyRivals] = useState(false);
-  const state = useApi<Conflict[]>('conflicts', { limit: 60 });
+  const [rivalsOnly, setRivalsOnly] = useState(false);
+  const state = useApi<ConflictReport>('conflicts', {
+    limit: PAGE_SIZE,
+    // Server-side, not client-side: the list is ordered worst-first, so the
+    // first page is all rivalries and a browser-side filter would do nothing.
+    rivalsOnly: rivalsOnly ? 'true' : 'false',
+  });
   useReportTraces(state.traces);
 
-  const all = state.data ?? [];
-  const shown = onlyRivals ? all.filter((conflict) => conflict.declaredRivals) : all;
-  const rivalCount = all.filter((conflict) => conflict.declaredRivals).length;
+  const totals = state.data?.totals;
 
   return (
     <>
@@ -29,15 +34,20 @@ export function ConflictsPage() {
       </div>
 
       <div className="row row--between row--wrap" style={{ gap: 10, marginBottom: 14 }}>
-        <div className="row" style={{ gap: 8 }}>
-          <span className="badge badge--danger">{rivalCount} declared rivalries</span>
-          <span className="badge badge--warning">{all.length - rivalCount} sector overlaps</span>
+        <div className="row row--wrap" style={{ gap: 8 }}>
+          <span className="badge badge--danger">{totals ? count(totals.rivalries) : '—'} declared rivalries</span>
+          <span className="badge badge--warning">
+            {totals ? count(totals.overlaps - totals.rivalries) : '—'} sector overlaps
+          </span>
+          <span className="faint" style={{ fontSize: 12.5 }}>
+            across the whole graph · showing the {PAGE_SIZE} most severe
+          </span>
         </div>
         <div className="segmented">
-          <button type="button" aria-pressed={!onlyRivals} onClick={() => setOnlyRivals(false)}>
+          <button type="button" aria-pressed={!rivalsOnly} onClick={() => setRivalsOnly(false)}>
             All overlaps
           </button>
-          <button type="button" aria-pressed={onlyRivals} onClick={() => setOnlyRivals(true)}>
+          <button type="button" aria-pressed={rivalsOnly} onClick={() => setRivalsOnly(true)}>
             Declared rivals only
           </button>
         </div>
@@ -46,19 +56,19 @@ export function ConflictsPage() {
       <AsyncBoundary
         state={state}
         skeleton={<SkeletonCards count={6} height={150} />}
-        isEmpty={() => shown.length === 0}
+        isEmpty={(data) => data.conflicts.length === 0}
         empty={
           <EmptyState
-            title={onlyRivals ? 'No declared rivalries' : 'No overlapping bets'}
+            title={rivalsOnly ? 'No declared rivalries' : 'No overlapping bets'}
             body={
-              onlyRivals
+              rivalsOnly
                 ? 'No firm in the graph has backed two companies that are modelled as direct competitors.'
                 : 'No firm has two portfolio companies in the same sector.'
             }
             icon="✓"
             action={
-              onlyRivals ? (
-                <button type="button" className="btn btn--sm" onClick={() => setOnlyRivals(false)}>
+              rivalsOnly ? (
+                <button type="button" className="btn btn--sm" onClick={() => setRivalsOnly(false)}>
                   Show all overlaps
                 </button>
               ) : undefined
@@ -66,9 +76,9 @@ export function ConflictsPage() {
           />
         }
       >
-        {() => (
+        {(data) => (
           <div className="grid grid--2">
-            {shown.map((conflict, index) => (
+            {data.conflicts.map((conflict, index) => (
               <article
                 key={`${conflict.investor.id}-${conflict.companies[0].company.id}-${conflict.companies[1].company.id}-${index}`}
                 className="card"

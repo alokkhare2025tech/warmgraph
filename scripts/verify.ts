@@ -13,7 +13,7 @@ import { closeDriver } from '../server/db.ts';
 import { handleApiRequest } from '../server/routes.ts';
 import type {
   ApiResponse,
-  Conflict,
+  ConflictReport,
   EcosystemStats,
   HealthReport,
   IntroResult,
@@ -123,13 +123,17 @@ async function main(): Promise<void> {
   }
 
   heading('The query SQL would hate');
-  const conflicts = await call<Conflict[]>('conflicts', { limit: '10' });
-  if (conflicts?.length) {
-    const worst = conflicts[0];
+  const conflicts = await call<ConflictReport>('conflicts', { limit: '10' });
+  if (conflicts?.conflicts.length) {
+    const worst = conflicts.conflicts[0];
+    console.log(
+      `     ${DIM}${conflicts.totals.rivalries} declared rivalries and ${conflicts.totals.overlaps - conflicts.totals.rivalries} sector overlaps in total${RESET}`,
+    );
     console.log(
       `     ${DIM}${worst.investor.name} backs ${worst.companies[0].company.name} and ${worst.companies[1].company.name} in ${worst.sector}${worst.declaredRivals ? ' (declared rivals)' : ''}${RESET}`,
     );
   }
+  await call<ConflictReport>('conflicts', { limit: '5', rivalsOnly: 'true' });
 
   heading('Graph explorer');
   if (investor) {

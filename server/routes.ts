@@ -89,7 +89,8 @@ const HANDLERS: Record<string, Handler> = {
 
   recommend: (tracer, query) => recommendInvestors(tracer, required(query, 'from'), intParam(query, 'limit', 8)),
 
-  conflicts: (tracer, query) => getConflicts(tracer, intParam(query, 'limit', 40)),
+  conflicts: (tracer, query) =>
+    getConflicts(tracer, intParam(query, 'limit', 40), query.get('rivalsOnly') === 'true'),
 
   graph: (tracer, query) => getNeighbourhood(tracer, required(query, 'id'), intParam(query, 'depth', 1)),
 

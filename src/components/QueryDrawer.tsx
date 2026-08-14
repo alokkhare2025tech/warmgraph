@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { QueryTrace } from '../../shared/types';
 import { CypherBlock } from './Cypher';
 
@@ -39,7 +40,11 @@ export function QueryDrawer({ traces, onClose }: { traces: QueryTrace[]; onClose
     }
   }
 
-  return (
+  // Rendered into <body> rather than in place. The trigger button lives in the
+  // top bar, which uses `backdrop-filter` — and that creates a containing block
+  // for fixed-position descendants, so an inline drawer would be clipped to the
+  // 60px-tall header instead of covering the viewport.
+  return createPortal(
     <>
       <div className="drawer-backdrop" onClick={onClose} aria-hidden />
       <aside className="drawer" role="dialog" aria-modal="true" aria-label="Queries behind this screen">
@@ -88,7 +93,8 @@ export function QueryDrawer({ traces, onClose }: { traces: QueryTrace[]; onClose
           )}
         </div>
       </aside>
-    </>
+    </>,
+    document.body,
   );
 }
 

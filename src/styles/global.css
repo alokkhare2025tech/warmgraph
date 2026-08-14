@@ -577,7 +577,9 @@ button, input, select, textarea { font: inherit; color: inherit; }
   overflow: hidden;
 }
 
-.warmth__fill { height: 100%; border-radius: 999px; }
+/* `display: block` matters: this is a <span> inside a non-flex track, and an
+   inline box would ignore the width and height entirely. */
+.warmth__fill { display: block; height: 100%; border-radius: 999px; }
 
 .chain {
   display: flex;
@@ -765,6 +767,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 }
 
 .drawer__body { overflow-y: auto; padding: 16px 20px 40px; display: flex; flex-direction: column; gap: 18px; }
+
+/* Without this the query blocks shrink to fit the fixed-height drawer instead
+   of overflowing it, and the body never scrolls. */
+.drawer__body > * { flex: none; }
 
 .query-block { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
 

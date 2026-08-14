@@ -19,8 +19,10 @@ interface LayoutNode extends SimulationNodeDatum, GraphNode {
 
 type LayoutLink = SimulationLinkDatum<LayoutNode> & { id: string; type: string };
 
+// The viewBox aspect is deliberately close to the card's, so `meet` scaling
+// fills the width instead of letterboxing the graph into the middle third.
 const WIDTH = 1000;
-const HEIGHT = 620;
+const HEIGHT = 500;
 
 /**
  * The layout is computed once per dataset, synchronously, rather than animated.
@@ -63,7 +65,30 @@ function layout(subgraph: Subgraph): { nodes: LayoutNode[]; links: LayoutLink[] 
     .stop();
 
   simulation.tick(320);
+
+  // A charge-driven layout can push outliers past the viewBox, where the SVG
+  // clips them and they simply vanish. Clamping after the simulation keeps the
+  // whole neighbourhood on screen; it slightly compresses the fringe, which is
+  // a better trade than silently dropping nodes.
+  const pad = 26;
+  for (const node of nodes) {
+    node.x = Math.min(WIDTH - pad, Math.max(pad, node.x ?? WIDTH / 2));
+    node.y = Math.min(HEIGHT - pad, Math.max(pad, node.y ?? HEIGHT / 2));
+  }
+
   return { nodes, links };
+}
+
+/**
+ * Labelling every node turns a dense graph into unreadable soup. Only the
+ * centre, the hubs, and the kinds whose names carry meaning get a label —
+ * Round labels ("Seed · $3M") are long and the least informative, so they are
+ * left to the hover tooltip.
+ */
+function shouldLabel(node: LayoutNode, centerId: string | undefined): boolean {
+  if (node.id === centerId) return true;
+  if (node.kind === 'Round' || node.kind === 'School') return false;
+  return node.radius >= 10;
 }
 
 export function GraphCanvas({
@@ -197,12 +222,16 @@ export function GraphCanvas({
                   stroke={node.id === subgraph.center?.id ? 'var(--text)' : 'var(--bg)'}
                   strokeWidth={node.id === subgraph.center?.id ? 2.5 : 1.5}
                 />
-                {node.radius >= 9 || node.id === subgraph.center?.id ? (
+                {shouldLabel(node, subgraph.center?.id) ? (
                   <text
                     y={node.radius + 13}
                     textAnchor="middle"
                     fontSize={11}
-                    fill="var(--text-muted)"
+                    fill={node.id === subgraph.center?.id ? 'var(--text)' : 'var(--text-muted)'}
+                    fontWeight={node.id === subgraph.center?.id ? 600 : 400}
+                    stroke="var(--bg)"
+                    strokeWidth={3}
+                    paintOrder="stroke"
                     style={{ pointerEvents: 'none', fontFamily: 'var(--sans)' }}
                   >
                     {node.label.length > 22 ? `${node.label.slice(0, 21)}…` : node.label}

@@ -1,7 +1,7 @@
-import type { Conflict, Stage } from '../../shared/types.ts';
-import { CONFLICTS } from '../cypher.ts';
+import type { Conflict, ConflictReport, Stage } from '../../shared/types.ts';
+import { CONFLICT_COUNTS, CONFLICTS } from '../cypher.ts';
 import type { Tracer } from '../execute.ts';
-import { investorFrom, toStringList } from '../mappers.ts';
+import { investorFrom, toNumber, toStringList } from '../mappers.ts';
 
 /**
  * "Which firms are funding both sides of a fight?"
@@ -12,10 +12,17 @@ import { investorFrom, toStringList } from '../mappers.ts';
  * round-participation table with a de-duplication predicate to stop each pair
  * appearing twice.
  */
-export async function getConflicts(tracer: Tracer, limit = 40): Promise<Conflict[]> {
-  const rows = await tracer.rows(CONFLICTS, { limit });
+export async function getConflicts(tracer: Tracer, limit = 40, rivalsOnly = false): Promise<ConflictReport> {
+  // The list is ordered worst-first, so filtering it in the browser would be
+  // degenerate — every row on page one is already a declared rivalry. The
+  // filter has to reach the query, and the totals have to be counted
+  // separately or the summary only ever describes the current page.
+  const [rows, counts] = await Promise.all([
+    tracer.rows(CONFLICTS, { limit, rivalsOnly }),
+    tracer.row(CONFLICT_COUNTS),
+  ]);
 
-  return rows.map((row) => {
+  const conflicts: Conflict[] = rows.map((row) => {
     const declaredRivals = Boolean(row.declaredRivals);
     return {
       investor: {
@@ -52,4 +59,13 @@ export async function getConflicts(tracer: Tracer, limit = 40): Promise<Conflict
       severity: declaredRivals ? 'high' : 'medium',
     };
   });
+
+  return {
+    conflicts,
+    totals: {
+      overlaps: toNumber(counts?.overlaps),
+      rivalries: toNumber(counts?.rivalries),
+    },
+    rivalsOnly,
+  };
 }
