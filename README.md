@@ -6,7 +6,8 @@ Built on [CognoDB](https://console.cognodb.com) — openCypher over Bolt, via th
 
 | | |
 |---|---|
-| **Live demo** | _add your Vercel URL here after deploying_ |
+| **Live demo** | **<https://warmgraph.vercel.app>** |
+| **Repository** | <https://github.com/GurpreetDel/warmgraph> |
 | **Screen recording** | _add your Loom/YouTube link here_ |
 | **Stack** | React 18 + Vite + TypeScript · Node serverless API · CognoDB (graph) |
 
@@ -130,7 +131,8 @@ Two details in the generator are worth flagging because they are modelling decis
 
 ## 4. Screenshots
 
-> Replace these with your own captures — see [`docs/README.md`](docs/README.md) for the exact list and how to take them.
+> Captured from the running app with [`scripts/screenshots.mjs`](scripts/screenshots.mjs), so they can be
+> regenerated exactly. Because the dataset is generated from a fixed seed, they show the same graph you get.
 
 | | |
 |---|---|
@@ -325,7 +327,9 @@ vercel --prod
 
 `vercel.json` rewrites `/api/*` to the single function in `api/index.ts` and everything else to `index.html`. Responses carry `s-maxage=30, stale-while-revalidate=120`, which keeps the free `c0` instance from being hit by every page view while staying fresh enough that a re-seed shows up almost immediately.
 
-If you add the environment variables *after* the first deploy, redeploy — Vercel injects them at build/run time.
+If you add the environment variables *after* the first deploy, redeploy — Vercel injects them at run time.
+
+**One deployment note worth knowing.** Vercel *transpiles* `api/` rather than bundling it, and `package.json` declares `"type": "module"`, so Node's ESM loader applies to the emitted files. Extensionless relative imports resolve fine under `tsx` and Vite but fail at runtime on Vercel with `ERR_MODULE_NOT_FOUND`. Every relative import in `server/`, `api/` and `scripts/` therefore carries an explicit `.js` extension — the standard TypeScript-ESM convention, where `tsc` maps `.js` back to the `.ts` source when typechecking.
 
 > **Keep the CognoDB instance running** until you hear back, so the demo link works against live data.
 

@@ -44,19 +44,41 @@ Everything the brief asks for, and where it lives.
 - [x] **Full source code** — application, data-loading scripts, all Cypher.
 - [x] **README** — use case, "Why a graph database?", data model diagram, setup instructions
       (including creating the CognoDB instance), the main queries explained.
-- [ ] **Screenshots of the UI** — see [`docs/README.md`](docs/README.md) for the list of six.
-- [ ] **Hosted demo link** *(mandatory)* — deploy per [README §8](README.md#8-deploying), then paste
-      the URL into the table at the top of the README.
+- [x] **Screenshots of the UI** — six PNGs in [`docs/`](docs/), reproducible via
+      [`scripts/screenshots.mjs`](scripts/screenshots.mjs).
+- [x] **Hosted demo link** *(mandatory)* — <https://warmgraph.vercel.app>
 - [ ] **Short screen recording** *(mandatory)* — suggested script in [`docs/README.md`](docs/README.md).
+
+## What is still outstanding
+
+**The hosted demo needs a CognoDB instance.** The app is deployed and the API is live, but until the
+three connection variables are set it correctly reports *"No database configured"*. To finish:
+
+1. Sign up at <https://console.cognodb.com/signup> and create a free **c0** instance.
+   Copy the `bolt+s://` URI and the generated password — CognoDB shows the password **once**.
+2. Point the local checkout at it and load the data:
+   ```bash
+   cp .env.example .env      # paste URI + password
+   npm run seed              # ~1,150 nodes, ~6,800 relationships
+   npm run verify            # expect: 18 passed, 0 failed
+   ```
+3. Give the deployment the same credentials and redeploy:
+   ```bash
+   vercel env add COGNODB_URI production        # bolt+s://<instance>.databases.cognodb.cloud
+   vercel env add COGNODB_USER production       # cognodb
+   vercel env add COGNODB_PASSWORD production
+   vercel --prod
+   ```
+4. Record the 2–3 minute walkthrough and paste the link into the README table.
 
 ## Before you submit
 
 1. `npm run verify` passes against the live instance.
 2. The hosted demo loads and the warm-intro flow works end to end.
-3. The demo URL and recording link are pasted into the README table.
-4. Screenshots are committed in `docs/`.
-5. **Leave the CognoDB instance running** — the brief asks for it to stay up until you hear back.
-6. If the repo is private, grant access as the brief requests.
+3. The demo URL and recording link are in the README table.
+4. **Leave the CognoDB instance running** — the brief asks for it to stay up until you hear back.
+5. The repo is public, so no access grant is needed. Making it private is fine too — the brief
+   then asks you to add the reviewers as collaborators.
 
 ## Email
 
