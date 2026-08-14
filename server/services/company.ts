@@ -1,8 +1,8 @@
-import type { CompanyDetail, Stage } from '../../shared/types';
-import { COMPANY_COMPETITORS, COMPANY_CORE, COMPANY_ROUNDS } from '../cypher';
-import { notFound } from '../errors';
-import type { Tracer } from '../execute';
-import { compact, investorFrom, toNumber, toStringList } from '../mappers';
+import type { CompanyDetail, Stage } from '../../shared/types.js';
+import { COMPANY_COMPETITORS, COMPANY_CORE, COMPANY_ROUNDS } from '../cypher.js';
+import { notFound } from '../errors.js';
+import type { Tracer } from '../execute.js';
+import { compact, investorFrom, toNumber, toStringList } from '../mappers.js';
 
 export async function getCompany(tracer: Tracer, id: string): Promise<CompanyDetail> {
   const [core, roundRows, competitorRows] = await Promise.all([

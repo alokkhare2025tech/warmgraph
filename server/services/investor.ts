@@ -1,8 +1,8 @@
-import type { CoInvestor, InvestorDetail, PortfolioEntry, Stage } from '../../shared/types';
-import { INVESTOR_CO_INVESTORS, INVESTOR_CORE, INVESTOR_PORTFOLIO } from '../cypher';
-import { notFound } from '../errors';
-import type { Tracer } from '../execute';
-import { compact, investorFrom, toNumber, toStringList } from '../mappers';
+import type { CoInvestor, InvestorDetail, PortfolioEntry, Stage } from '../../shared/types.js';
+import { INVESTOR_CO_INVESTORS, INVESTOR_CORE, INVESTOR_PORTFOLIO } from '../cypher.js';
+import { notFound } from '../errors.js';
+import type { Tracer } from '../execute.js';
+import { compact, investorFrom, toNumber, toStringList } from '../mappers.js';
 
 export async function getInvestor(tracer: Tracer, id: string): Promise<InvestorDetail> {
   const [core, portfolioRows, coInvestorRows] = await Promise.all([

@@ -1,5 +1,5 @@
 import { createServer } from 'node:http';
-import { handleApiRequest } from './routes';
+import { handleApiRequest } from './routes.js';
 
 /**
  * Local development API server.

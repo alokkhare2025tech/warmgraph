@@ -6,7 +6,7 @@ import type {
   PersonSummary,
   SearchHit,
   Stage,
-} from '../shared/types';
+} from '../shared/types.js';
 
 type Row = Record<string, any>;
 

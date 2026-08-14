@@ -1,4 +1,4 @@
-import type { ApiErrorCode } from '../shared/types';
+import type { ApiErrorCode } from '../shared/types.js';
 
 /**
  * A failure the API knows how to describe. Anything thrown that is *not* an

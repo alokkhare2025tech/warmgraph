@@ -1,7 +1,7 @@
-import type { EcosystemStats, Stage } from '../../shared/types';
-import { STATS_COUNTS, STATS_MOST_CONNECTED, STATS_STAGE_BREAKDOWN, STATS_TOP_SECTORS } from '../cypher';
-import type { Tracer } from '../execute';
-import { personFrom, toNumber } from '../mappers';
+import type { EcosystemStats, Stage } from '../../shared/types.js';
+import { STATS_COUNTS, STATS_MOST_CONNECTED, STATS_STAGE_BREAKDOWN, STATS_TOP_SECTORS } from '../cypher.js';
+import type { Tracer } from '../execute.js';
+import { personFrom, toNumber } from '../mappers.js';
 
 export async function getStats(tracer: Tracer): Promise<EcosystemStats> {
   // Four independent reads — issue them together rather than in series so the

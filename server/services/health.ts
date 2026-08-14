@@ -1,8 +1,8 @@
-import type { HealthReport } from '../../shared/types';
-import { readConfig } from '../config';
-import { HEALTH_PING, HEALTH_SEEDED } from '../cypher';
-import { getDriver, run, toApiError } from '../db';
-import { toNumber } from '../mappers';
+import type { HealthReport } from '../../shared/types.js';
+import { readConfig } from '../config.js';
+import { HEALTH_PING, HEALTH_SEEDED } from '../cypher.js';
+import { getDriver, run, toApiError } from '../db.js';
+import { toNumber } from '../mappers.js';
 
 /**
  * Never throws. The frontend polls this to decide whether to show the

@@ -1,6 +1,6 @@
 import neo4j, { type Driver, type QueryResult, type Session } from 'neo4j-driver';
-import { CONNECTION_TIMEOUT_MS, QUERY_TIMEOUT_MS, readConfig } from './config';
-import { ApiError } from './errors';
+import { CONNECTION_TIMEOUT_MS, QUERY_TIMEOUT_MS, readConfig } from './config.js';
+import { ApiError } from './errors.js';
 
 /**
  * CognoDB speaks openCypher over Bolt, so the *official* Neo4j driver is the

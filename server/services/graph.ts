@@ -1,8 +1,8 @@
-import type { GraphEdge, GraphNode, Subgraph } from '../../shared/types';
-import { GRAPH_CENTER, NEIGHBOURHOOD_QUERIES } from '../cypher';
-import { badRequest, notFound } from '../errors';
-import type { Tracer } from '../execute';
-import { displayNameOf, formatUsdShort, kindOf, toNumber, type RawNode } from '../mappers';
+import type { GraphEdge, GraphNode, Subgraph } from '../../shared/types.js';
+import { GRAPH_CENTER, NEIGHBOURHOOD_QUERIES } from '../cypher.js';
+import { badRequest, notFound } from '../errors.js';
+import type { Tracer } from '../execute.js';
+import { displayNameOf, formatUsdShort, kindOf, toNumber, type RawNode } from '../mappers.js';
 
 const MAX_PATHS = 400;
 

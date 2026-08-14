@@ -1,17 +1,17 @@
-import type { ApiResponse } from '../shared/types';
-import { CATALOGUE } from './cypher';
-import { ApiError, badRequest, notFound } from './errors';
-import { Tracer } from './execute';
-import { toApiError } from './db';
-import { getCompany } from './services/company';
-import { getConflicts } from './services/conflicts';
-import { getFilters, listCompanies, listInvestors, listPersonas, search } from './services/directory';
-import { getNeighbourhood } from './services/graph';
-import { checkHealth } from './services/health';
-import { findIntroductions, recommendInvestors } from './services/intro';
-import { getInvestor } from './services/investor';
-import { getPerson } from './services/person';
-import { getStats } from './services/stats';
+import type { ApiResponse } from '../shared/types.js';
+import { CATALOGUE } from './cypher.js';
+import { ApiError, badRequest, notFound } from './errors.js';
+import { Tracer } from './execute.js';
+import { toApiError } from './db.js';
+import { getCompany } from './services/company.js';
+import { getConflicts } from './services/conflicts.js';
+import { getFilters, listCompanies, listInvestors, listPersonas, search } from './services/directory.js';
+import { getNeighbourhood } from './services/graph.js';
+import { checkHealth } from './services/health.js';
+import { findIntroductions, recommendInvestors } from './services/intro.js';
+import { getInvestor } from './services/investor.js';
+import { getPerson } from './services/person.js';
+import { getStats } from './services/stats.js';
 
 export interface ApiRequest {
   /** Path with the /api prefix already stripped, e.g. "investor". */

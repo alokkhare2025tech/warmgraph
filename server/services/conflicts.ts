@@ -1,7 +1,7 @@
-import type { Conflict, ConflictReport, Stage } from '../../shared/types';
-import { CONFLICT_COUNTS, CONFLICTS } from '../cypher';
-import type { Tracer } from '../execute';
-import { investorFrom, toNumber, toStringList } from '../mappers';
+import type { Conflict, ConflictReport, Stage } from '../../shared/types.js';
+import { CONFLICT_COUNTS, CONFLICTS } from '../cypher.js';
+import type { Tracer } from '../execute.js';
+import { investorFrom, toNumber, toStringList } from '../mappers.js';
 
 /**
  * "Which firms are funding both sides of a fight?"
