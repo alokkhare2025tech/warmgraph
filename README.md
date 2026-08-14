@@ -7,7 +7,7 @@ Built on [CognoDB](https://console.cognodb.com) — openCypher over Bolt, via th
 | | |
 |---|---|
 | **Live demo** | **<https://warmgraph.vercel.app>** |
-| **Repository** | <https://github.com/GurpreetDel/warmgraph> |
+| **Repository** | <https://github.com/alokkhare2025tech/warmgraph> |
 | **Screen recording** | _add your Loom/YouTube link here_ |
 | **Stack** | React 18 + Vite + TypeScript · Node serverless API · CognoDB (graph) |
 
