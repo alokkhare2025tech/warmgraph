@@ -47,7 +47,8 @@ Everything the brief asks for, and where it lives.
 - [x] **Screenshots of the UI** — six PNGs in [`docs/`](docs/), reproducible via
       [`scripts/screenshots.mjs`](scripts/screenshots.mjs).
 - [x] **Hosted demo link** *(mandatory)* — <https://warmgraph.vercel.app>
-- [ ] **Short screen recording** *(mandatory)* — suggested script in [`docs/README.md`](docs/README.md).
+- [x] **Short screen recording** *(mandatory)* — [`recordings/warmgraph-demo.webm`](recordings/warmgraph-demo.webm),
+      following the script in [`docs/README.md`](docs/README.md).
 
 ## What is still outstanding
 
