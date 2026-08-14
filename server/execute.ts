@@ -1,6 +1,6 @@
-import type { QueryTrace } from '../shared/types.ts';
-import type { CypherStatement } from './cypher.ts';
-import { run } from './db.ts';
+import type { QueryTrace } from '../shared/types';
+import type { CypherStatement } from './cypher';
+import { run } from './db';
 
 type Row = Record<string, any>;
 

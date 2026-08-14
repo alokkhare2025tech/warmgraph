@@ -1,5 +1,5 @@
 import { createServer } from 'node:http';
-import { handleApiRequest } from './routes.ts';
+import { handleApiRequest } from './routes';
 
 /**
  * Local development API server.

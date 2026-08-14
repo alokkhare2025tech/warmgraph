@@ -10,8 +10,8 @@
  * free-tier instance.
  */
 
-import { closeDriver, run, toApiError } from '../server/db.ts';
-import { buildDataset, summarise, type Dataset } from './dataset.ts';
+import { closeDriver, run, toApiError } from '../server/db';
+import { buildDataset, summarise, type Dataset } from './dataset';
 
 const BATCH_SIZE = 400;
 

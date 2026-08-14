@@ -1,17 +1,17 @@
-import type { ApiResponse } from '../shared/types.ts';
-import { CATALOGUE } from './cypher.ts';
-import { ApiError, badRequest, notFound } from './errors.ts';
-import { Tracer } from './execute.ts';
-import { toApiError } from './db.ts';
-import { getCompany } from './services/company.ts';
-import { getConflicts } from './services/conflicts.ts';
-import { getFilters, listCompanies, listInvestors, listPersonas, search } from './services/directory.ts';
-import { getNeighbourhood } from './services/graph.ts';
-import { checkHealth } from './services/health.ts';
-import { findIntroductions, recommendInvestors } from './services/intro.ts';
-import { getInvestor } from './services/investor.ts';
-import { getPerson } from './services/person.ts';
-import { getStats } from './services/stats.ts';
+import type { ApiResponse } from '../shared/types';
+import { CATALOGUE } from './cypher';
+import { ApiError, badRequest, notFound } from './errors';
+import { Tracer } from './execute';
+import { toApiError } from './db';
+import { getCompany } from './services/company';
+import { getConflicts } from './services/conflicts';
+import { getFilters, listCompanies, listInvestors, listPersonas, search } from './services/directory';
+import { getNeighbourhood } from './services/graph';
+import { checkHealth } from './services/health';
+import { findIntroductions, recommendInvestors } from './services/intro';
+import { getInvestor } from './services/investor';
+import { getPerson } from './services/person';
+import { getStats } from './services/stats';
 
 export interface ApiRequest {
   /** Path with the /api prefix already stripped, e.g. "investor". */

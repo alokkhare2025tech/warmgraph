@@ -9,8 +9,8 @@
  * web app uses, with no browser in the way.
  */
 
-import { closeDriver } from '../server/db.ts';
-import { handleApiRequest } from '../server/routes.ts';
+import { closeDriver } from '../server/db';
+import { handleApiRequest } from '../server/routes';
 import type {
   ApiResponse,
   ConflictReport,
@@ -21,7 +21,7 @@ import type {
   Persona,
   Recommendation,
   Subgraph,
-} from '../shared/types.ts';
+} from '../shared/types';
 
 const GREEN = '[32m';
 const RED = '[31m';

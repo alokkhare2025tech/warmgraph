@@ -1,8 +1,8 @@
-import type { HealthReport } from '../../shared/types.ts';
-import { readConfig } from '../config.ts';
-import { HEALTH_PING, HEALTH_SEEDED } from '../cypher.ts';
-import { getDriver, run, toApiError } from '../db.ts';
-import { toNumber } from '../mappers.ts';
+import type { HealthReport } from '../../shared/types';
+import { readConfig } from '../config';
+import { HEALTH_PING, HEALTH_SEEDED } from '../cypher';
+import { getDriver, run, toApiError } from '../db';
+import { toNumber } from '../mappers';
 
 /**
  * Never throws. The frontend polls this to decide whether to show the

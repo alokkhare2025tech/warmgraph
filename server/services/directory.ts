@@ -6,10 +6,10 @@ import type {
   Persona,
   SearchHit,
   Stage,
-} from '../../shared/types.ts';
-import { LIST_COMPANIES, LIST_INVESTORS, LIST_PERSONAS, LIST_SECTORS, SEARCH_ENTITIES } from '../cypher.ts';
-import type { Tracer } from '../execute.ts';
-import { companyFrom, investorFrom, personFrom, searchHitFrom, toNumber, toStringList } from '../mappers.ts';
+} from '../../shared/types';
+import { LIST_COMPANIES, LIST_INVESTORS, LIST_PERSONAS, LIST_SECTORS, SEARCH_ENTITIES } from '../cypher';
+import type { Tracer } from '../execute';
+import { companyFrom, investorFrom, personFrom, searchHitFrom, toNumber, toStringList } from '../mappers';
 
 export const STAGES: Stage[] = ['Pre-Seed', 'Seed', 'Series A', 'Series B', 'Series C'];
 export const INVESTOR_TYPES: InvestorType[] = ['VC', 'Angel', 'Accelerator', 'Corporate VC', 'Family Office'];

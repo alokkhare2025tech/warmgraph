@@ -1,4 +1,4 @@
-import type { ApiErrorCode } from '../shared/types.ts';
+import type { ApiErrorCode } from '../shared/types';
 
 /**
  * A failure the API knows how to describe. Anything thrown that is *not* an

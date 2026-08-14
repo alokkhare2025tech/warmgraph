@@ -1,8 +1,8 @@
-import type { PersonDetail, Stage, TieStrength } from '../../shared/types.ts';
-import { PERSON_CONTACTS, PERSON_CORE } from '../cypher.ts';
-import { notFound } from '../errors.ts';
-import type { Tracer } from '../execute.ts';
-import { compact, personFrom, toNumber } from '../mappers.ts';
+import type { PersonDetail, Stage, TieStrength } from '../../shared/types';
+import { PERSON_CONTACTS, PERSON_CORE } from '../cypher';
+import { notFound } from '../errors';
+import type { Tracer } from '../execute';
+import { compact, personFrom, toNumber } from '../mappers';
 
 export async function getPerson(tracer: Tracer, id: string): Promise<PersonDetail> {
   const [core, contactRows] = await Promise.all([

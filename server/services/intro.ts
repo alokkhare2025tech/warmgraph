@@ -7,17 +7,17 @@ import type {
   PersonSummary,
   Recommendation,
   Stage,
-} from '../../shared/types.ts';
+} from '../../shared/types';
 import {
   INTRO_PATH_QUERIES,
   INTRO_TARGET_PARTNERS,
   INVESTOR_CORE,
   PERSON_CORE,
   RECOMMEND_INVESTORS,
-} from '../cypher.ts';
-import { badRequest, notFound } from '../errors.ts';
-import type { Tracer } from '../execute.ts';
-import { compact, investorFrom, kindOf, personFrom, toNumber, toStringList } from '../mappers.ts';
+} from '../cypher';
+import { badRequest, notFound } from '../errors';
+import type { Tracer } from '../execute';
+import { compact, investorFrom, kindOf, personFrom, toNumber, toStringList } from '../mappers';
 
 const CURRENT_YEAR = 2025;
 
